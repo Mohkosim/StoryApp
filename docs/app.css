@@ -75,6 +75,7 @@ header {
   font-size: 28px;
   color: #141e16;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .navigation-drawer__navlist-main,
@@ -132,66 +133,6 @@ header {
   z-index: 100;
 }
 
-/* Write your styles more here */
-
-@media screen and (max-width: 1000px) {
-  .navigation-drawer {
-    min-height: auto;
-    width: 200px;
-    /* Keep the width for mobile */
-    padding: 20px 10px;
-    background-color: #fff;
-    position: fixed;
-    box-shadow: 0 0 4px 2px #00000033;
-    transform: translateX(-100%);
-  }
-
-  .navigation-drawer.open {
-    transform: translateX(0);
-  }
-
-  .drawer-button {
-    display: inline-block;
-  }
-
-  .navigation-drawer__navlist-main,
-  .navigation-drawer__navlist {
-    flex-direction: column;
-    /* Stack items vertically */
-  }
-
-  .navigation-drawer__navlist-main li,
-  .navigation-drawer__navlist li {
-    width: 100%;
-    /* Full width for mobile */
-  }
-}
-
-@media screen and (min-width: 1001px) {
-  .navigation-drawer {
-    min-height: auto;
-    width: auto;
-    padding: 0;
-    background-color: transparent;
-    flex-direction: row;
-    justify-content: space-between;
-    position: static;
-    box-shadow: none;
-    transform: translateX(0);
-  }
-
-  .nav-list {
-    flex-direction: row;
-  }
-
-  .nav-list li a {
-    display: inline-block;
-  }
-
-  .drawer-button {
-    display: none;
-  }
-}
 
 /* ==========  Loader =========== */
 .loader {
@@ -710,48 +651,158 @@ footer {
   margin: 0;
 }
 
-@media screen and (max-width: 768px) {
-  .home-page h1 {
-    font-size: 1.5rem;
-    margin-left: 0;
-    text-align: center;
+/* Write your styles more here */
+
+/* Tablet & Small Desktop (≤ 1000px) */
+@media screen and (max-width: 1000px) {
+  .drawer-button {
+    display: inline-block;
   }
 
-  .story-list {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  .navigation-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 0 4px 2px #00000033;
+    padding: 20px 10px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 999;
   }
 
-  .login-form-container,
-  .register-form-container {
-    margin: 2rem 1rem;
+  .navigation-drawer.open {
+    transform: translateX(0);
   }
 
-  .add-story {
-    padding: 1rem;
+  .navigation-drawer__navlist-main,
+  .navigation-drawer__navlist {
+    flex-direction: column;
   }
 
-  .add-story form {
-    padding: 1rem;
+  .navigation-drawer__navlist-main li,
+  .navigation-drawer__navlist li {
+    width: 100%;
   }
 }
 
-@media screen and (max-width: 480px) {
+/* Desktop (≥ 1001px) */
+@media screen and (min-width: 1001px) {
+  .navigation-drawer {
+    flex-direction: row;
+    background-color: transparent;
+    box-shadow: none;
+    position: static;
+    padding: 0;
+    transform: translateX(0);
+  }
+
+  .drawer-button {
+    display: none;
+  }
+}
+
+/* Tablet (≤ 768px) */
+@media screen and (max-width: 768px) {
+  .container {
+    padding-inline: 16px;
+  }
+
   .main-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-name {
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .drawer-button {
+    display: inline-block;
+    margin-left: auto;
+  }
+
+  .home-page {
+    padding: 1rem;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
+  .home-page h1 {
+    font-size: 1.5rem;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .story-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+
+  .story-card {
+    padding: 1rem;
+  }
+
+  .login-form-container,
+  .register-form-container,
+  .add-story,
+  .add-story form {
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+
+  #logout-button {
+    width: 100%;
+    text-align: center;
+    margin: 1rem 0;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media screen and (max-width: 480px) {
   .brand-name {
     font-size: 1.2rem;
   }
 
   .drawer-button {
+    display: inline-block;
+    position: fixed; /* tetap di posisi atas kanan */
+    top: 16px;
+    right: 16px;
+    z-index: 1001;
+    background: white; /* opsional agar terlihat */
+    padding: 6px 10px;
+    border-radius: 4px;
     font-size: 24px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   }
 
   .navigation-drawer {
-    width: 100%;
-    padding: 10px;
+    z-index: 1000;
+    width: 80%;
+    max-width: 240px;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    position: fixed;
+    background: white;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .navigation-drawer.open {
+    transform: translateX(0);
   }
 
   .story-card {
