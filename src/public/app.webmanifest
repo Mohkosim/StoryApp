@@ -1,0 +1,63 @@
+{
+  "id": "/#/",
+  "start_url": "/#/",
+  "scope": "/",
+  "name": "Story Map App",
+  "short_name": "Story Map",
+  "description": "Aplikasi berbasis web untuk menampilkan story map",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#007bff",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "images/screenshots/Screenshot 2025-05-15 141733.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "images/screenshots/Screenshot 2025-05-15 142000.png",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Laporan Baru",
+      "short_name": "Baru",
+      "description": "Membuat laporan kerusakan baru.",
+      "url": "/?source=pwa#/new",
+      "icons": [
+        {
+          "src": "images/icons/add-x512.png",
+          "type": "image/png",
+          "sizes": "512x512"
+        }
+      ]
+    },
+    {
+      "name": "Laporan Tersimpan",
+      "short_name": "Tersimpan",
+      "description": "Lihat daftar laporan tersimpan.",
+      "url": "/?source=pwa#/bookmark",
+      "icons": [
+        {
+          "src": "images/icons/bookmark-x512.png",
+          "type": "image/png",
+          "sizes": "512x512"
+        }
+      ]
+    }
+  ]
+}
