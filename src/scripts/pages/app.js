@@ -20,6 +20,7 @@ export default class App {
   #drawerButton;
   #drawerNavigation;
   #skipLinkButton;
+  #currentPage;
 
   constructor({ content, drawerNavigation, drawerButton, skipLinkButton }) {
     this.#content = content;
@@ -118,6 +119,10 @@ export default class App {
   }
 
   async renderPage() {
+    if (this.#currentPage && typeof this.#currentPage.destroy === "function") {
+      this.#currentPage.destroy();
+    }
+
     const url = getActiveRoute();
     const isLoggedIn = !!getAccessToken();
     const publicRoutes = ["/login", "/register"];
@@ -135,6 +140,7 @@ export default class App {
     }
 
     const page = route();
+    this.#currentPage = page;
 
     this.#setupNavigationList();
 

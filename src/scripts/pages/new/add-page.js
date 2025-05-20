@@ -66,21 +66,13 @@ export default class AddPage {
     this.#setupCamera();
     this.#setupLocation();
     this.addNotifyMeEventListener();
-
-    if (currentPage?.destroy) {
-      currentPage.destroy();
-    }
   }
 
+  // Method destroy() ini dipanggil ketika halaman dihapus agar kamera bisa dimatikan.
   destroy() {
     if (this.#videoStream) {
       this.#videoStream.getTracks().forEach((track) => track.stop());
       this.#videoStream = null;
-    }
-
-    if (this.#map) {
-      this.#map.remove();
-      this.#map = null;
     }
   }
 
@@ -97,6 +89,24 @@ export default class AddPage {
     this.#form = document.getElementById("addStoryForm");
     const message = document.getElementById("add-message");
     const preview = document.getElementById("photoPreview");
+    const photoInput = document.getElementById("photo");
+
+    photoInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file && file.size > 1024 * 1024) {
+        alert("Ukuran file terlalu besar. Maksimal 1MB.");
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.style.display = "block";
+        this.#capturedImageBlob = file;
+      };
+      reader.readAsDataURL(file);
+    });
 
     this.#form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -109,7 +119,7 @@ export default class AddPage {
       }
 
       if (this.latitude === undefined || this.longitude === undefined) {
-        message.textContent = "Harap izinkan akses lokasi untuk melanjutkan.";
+        message.textContent = "Harap izinkan akses lokasi.";
         return;
       }
 
@@ -126,7 +136,9 @@ export default class AddPage {
         this.#form.reset();
         preview.src = "";
         preview.style.display = "none";
+        this.#capturedImageBlob = null;
 
+        // Pastikan camera dimatikan setelah submit
         if (this.#videoStream) {
           this.#videoStream.getTracks().forEach((track) => track.stop());
           this.#videoStream = null;
@@ -151,6 +163,8 @@ export default class AddPage {
     const stopCameraButton = document.getElementById("stopCameraButton");
 
     const startCamera = async () => {
+      if (this.#videoStream) return; // Kamera sudah aktif
+
       try {
         this.#videoStream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -158,7 +172,7 @@ export default class AddPage {
         video.srcObject = this.#videoStream;
       } catch (err) {
         console.error("Gagal mengakses kamera:", err);
-        alert("Tidak dapat mengakses kamera. Periksa izin di browser.");
+        alert("Tidak dapat mengakses kamera. Periksa izin browser.");
       }
     };
 
@@ -179,16 +193,32 @@ export default class AddPage {
         return;
       }
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext("2d").drawImage(video, 0, 0);
-      canvas.toBlob((blob) => {
-        this.#capturedImageBlob = blob;
-        preview.src = URL.createObjectURL(blob);
-        preview.style.display = "block";
+      const maxWidth = 800;
+      const scale = maxWidth / video.videoWidth;
 
-        stopCamera(); // Kamera dimatikan setelah ambil foto
-      });
+      canvas.width = maxWidth;
+      canvas.height = video.videoHeight * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob.size > 1024 * 1024) {
+            alert(
+              "Ukuran foto melebihi 1MB. Ambil ulang dengan pencahayaan lebih rendah."
+            );
+            return;
+          }
+
+          this.#capturedImageBlob = blob;
+          preview.src = URL.createObjectURL(blob);
+          preview.style.display = "block";
+          stopCamera();
+        },
+        "image/jpeg",
+        0.7
+      );
     });
   }
 
@@ -251,9 +281,7 @@ export default class AddPage {
           },
           (err) => {
             console.error("Gagal mendapatkan lokasi:", err);
-            alert(
-              "Tidak dapat mengambil lokasi. Harap izinkan akses lokasi di browser."
-            );
+            alert("Gagal mengambil lokasi. Izinkan akses lokasi di browser.");
           }
         );
       });
